@@ -3,8 +3,8 @@ const { Octokit } = require("@octokit/rest");
 const axios = require("axios");
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
-const owner = "YOUR_USERNAME";
-const repo = "YOUR_REPOSITORY_NAME";
+const owner = "ABenoit0226";
+const repo = "bot-tester";
 
 const getDateDifferenceInDays = (date1, date2) => {
   const diffTime = Math.abs(date2 - date1);
