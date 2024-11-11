@@ -1,6 +1,6 @@
-// .github/scripts/deadline-check.js
-const { Octokit } = require("@octokit/rest");
-const axios = require("axios");
+// Use ES module imports
+import { Octokit } from "@octokit/rest";
+
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
 const owner = "ABenoit0226";
@@ -50,3 +50,4 @@ async function checkDeadlines() {
 }
 
 checkDeadlines();
+
