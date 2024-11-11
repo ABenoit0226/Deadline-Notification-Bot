@@ -3,6 +3,7 @@ name: Deadline Notifier
 on:
   schedule:
     - cron: '0 8 * * *'  # Runs daily at 8:00 AM UTC
+  workflow_dispatch:      # Enables manual run from the GitHub Actions tab
 
 jobs:
   deadline-check:
