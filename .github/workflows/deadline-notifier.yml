@@ -1,0 +1,27 @@
+name: Deadline Notifier
+
+on:
+  schedule:
+    - cron: '0 8 * * *'  # Runs daily at 8:00 AM UTC
+
+jobs:
+  deadline-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install Dependencies
+        run: npm install axios @octokit/rest
+
+      - name: Run Deadline Check Script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node .github/scripts/deadline-check.js
