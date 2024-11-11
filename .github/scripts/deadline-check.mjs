@@ -1,4 +1,3 @@
-// Use ES module imports
 import { Octokit } from "@octokit/rest";
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
@@ -19,35 +18,21 @@ async function checkDeadlines() {
       state: "open",
     });
 
+    console.log("Retrieved issues:", issues); // Debug: List all issues
+
     const today = new Date();
 
     for (const issue of issues) {
+      console.log(`Checking issue #${issue.number}: ${issue.title}`); // Debug: Issue details
+
       const assignees = issue.assignees.map((assignee) => `@${assignee.login}`).join(", ");
       const deadlineLabel = issue.labels.find(label => label.name.startsWith("deadline:"));
 
       if (deadlineLabel) {
         const deadlineString = deadlineLabel.name.replace("deadline:", "").trim();
         const deadlineDate = new Date(deadlineString);
-
         const daysLeft = getDateDifferenceInDays(today, deadlineDate);
 
-        if (daysLeft === 7 || daysLeft === 1 || daysLeft === 0) {  // Notify at 7 days, 1 day, and on the day
-          let message = `⏰ Reminder: This issue is due in ${daysLeft} day(s).`;
-          if (daysLeft === 0) message = "⏰ Today is the deadline for this issue!";
-          
-          await octokit.issues.createComment({
-            owner,
-            repo,
-            issue_number: issue.number,
-            body: `${assignees} ${message}`
-          });
-        }
-      }
-    }
-  } catch (error) {
-    console.error("Error checking deadlines:", error);
-  }
-}
+        console.log(`Issue #${issue.number} has a deadline in ${daysLeft} days`); // Debug: Deadline days left
 
-checkDeadlines();
-
+        if (daysLeft === 7 || daysLeft === 
