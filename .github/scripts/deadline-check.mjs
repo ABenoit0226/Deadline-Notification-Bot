@@ -35,4 +35,25 @@ async function checkDeadlines() {
 
         console.log(`Issue #${issue.number} has a deadline in ${daysLeft} days`); // Debug: Deadline days left
 
-        if (daysLeft === 7 || daysLeft === 
+        if (daysLeft === 7 || daysLeft === 1 || daysLeft === 0) {  // Notify at 7 days, 1 day, and on the day
+          let message = `⏰ Reminder: This issue is due in ${daysLeft} day(s).`;
+          if (daysLeft === 0) message = "⏰ Today is the deadline for this issue!";
+
+          await octokit.issues.createComment({
+            owner,
+            repo,
+            issue_number: issue.number,
+            body: `${assignees} ${message}`
+          });
+          console.log(`Comment posted on issue #${issue.number}`); // Debug: Confirmation of posting
+        }
+      } else {
+        console.log(`No deadline label found on issue #${issue.number}`); // Debug: No deadline label
+      }
+    }
+  } catch (error) {
+    console.error("Error checking deadlines:", error);
+  }
+}
+
+checkDeadlines();
