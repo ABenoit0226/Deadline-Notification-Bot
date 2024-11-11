@@ -19,11 +19,12 @@ jobs:
           node-version: '14'
 
       - name: Install Dependencies
-        run: npm install axios @octokit/rest
+        run: npm install  # This ensures node-fetch and other dependencies are installed
 
       - name: Run Deadline Check Script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           node .github/scripts/deadline-check.mjs
+
 
