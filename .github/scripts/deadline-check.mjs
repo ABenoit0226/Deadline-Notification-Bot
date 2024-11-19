@@ -10,8 +10,13 @@ const owner = "ABenoit0226";
 const repo = "bot-tester";
 
 const getDateDifferenceInDays = (date1, date2) => {
-  const diffTime = Math.abs(date2 - date1);
-  return Math.round(diffTime / (1000 * 60 * 60 * 24));
+  const normalizedDate1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
+  const normalizedDate2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
+
+  // Calculate the difference in days
+  const differenceInDays = (normalizedDate2 - normalizedDate1) / (1000 * 60 * 60 * 24);
+
+  return differenceInDays
 };
 
 async function checkDeadlines() {
