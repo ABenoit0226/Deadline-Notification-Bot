@@ -11,7 +11,7 @@ const repo = "bot-tester";
 
 const getDateDifferenceInDays = (date1, date2) => {
   const diffTime = Math.abs(date2 - date1);
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return Math.floor(diffTime / (1000 * 60 * 60 * 24));
 };
 
 async function checkDeadlines() {
@@ -40,8 +40,12 @@ async function checkDeadlines() {
         console.log(`Issue #${issue.number} has a deadline in ${daysLeft} days`);
 
         if (daysLeft === 7 || daysLeft === 1 || daysLeft === 0) {
-          let message = `⏰ Reminder: This issue is due in ${daysLeft} day(s).`;
-          if (daysLeft === 0) message = "⏰ Today is the deadline for this issue!";
+          let message;
+          if (daysLeft === 0) {
+            message = "⏰ Today is the deadline for this issue!";
+          } else {
+            message = `⏰ Reminder: This issue is due in ${daysLeft} day(s).`;
+          }
 
           await octokit.issues.createComment({
             owner,
