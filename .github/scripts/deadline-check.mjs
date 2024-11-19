@@ -39,7 +39,8 @@ async function checkDeadlines() {
 
       if (deadlineLabel) {
         const deadlineString = deadlineLabel.name.replace("deadline:", "").trim();
-        const deadlineDate = new Date(deadlineString);
+        const deadlineDate = new Date(deadlineString.replace(/-/g, '\/'));
+
         const daysLeft = getDateDifferenceInDays(today, deadlineDate);
 
         console.log(`Issue #${issue.number} has a deadline in ${daysLeft} days`);
