@@ -6,6 +6,12 @@ const octokit = new Octokit({
   request: { fetch }, // Pass fetch to Octokit
 });
 
+<<<<<<< HEAD
+=======
+const owner = "ABenoit0226";
+const repo = "Deadline-Notification-Bot";
+
+>>>>>>> dcf30115ab1d939dc3977424e71c1c3f94c40f6f
 const getDateDifferenceInDays = (date1, date2) => {
   const normalizedDate1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
   const normalizedDate2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
