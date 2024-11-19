@@ -7,7 +7,7 @@ const octokit = new Octokit({
 });
 
 const owner = "ABenoit0226";
-const repo = "bot-tester";
+const repo = "Deadline-Notification-Bot";
 
 const getDateDifferenceInDays = (date1, date2) => {
   const normalizedDate1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
