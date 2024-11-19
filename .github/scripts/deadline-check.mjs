@@ -11,7 +11,7 @@ const repo = "bot-tester";
 
 const getDateDifferenceInDays = (date1, date2) => {
   const diffTime = Math.abs(date2 - date1);
-  return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  return Math.round(diffTime / (1000 * 60 * 60 * 24));
 };
 
 async function checkDeadlines() {
