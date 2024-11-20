@@ -1,10 +1,14 @@
 import { Octokit } from "@octokit/rest";
 import fetch from "node-fetch"; // Import fetch from node-fetch
 
+const owner = "ABenoit0226" //OWNER NAME HERE
+const repo = "AI-Safety-Simplified" //REPO NAME HERE
+
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
   request: { fetch }, // Pass fetch to Octokit
 });
+
 
 const getDateDifferenceInDays = (date1, date2) => {
   const normalizedDate1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
