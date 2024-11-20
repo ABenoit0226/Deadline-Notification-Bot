@@ -2,7 +2,7 @@ import { Octokit } from "@octokit/rest";
 import fetch from "node-fetch"; // Import fetch from node-fetch
 
 const owner = "ABenoit0226" //OWNER NAME HERE
-const repo = "AI-Safety-Simplified" //REPO NAME HERE
+const repo = "bot-tester" //REPO NAME HERE
 
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
