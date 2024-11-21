@@ -23,8 +23,8 @@ jobs:
 
       - name: Run Deadline Check Script
         env:
-           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
-          node .github/scripts/deadline-check.mjs
+          node .github/scripts/deadline-check-org.mjs
 
 
