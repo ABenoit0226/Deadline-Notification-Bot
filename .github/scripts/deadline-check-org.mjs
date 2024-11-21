@@ -1,26 +1,22 @@
 import { Octokit } from "@octokit/rest";
-import fetch from "node-fetch"; // Import fetch from node-fetch
+import fetch from "node-fetch";
 
 const octokit = new Octokit({
-  auth: process.env.ORG_ACCESS_TOKEN,
-  request: { fetch }, // Pass fetch to Octokit
+  auth: process.env.ORG_ACCESS_TOKEN, // Use the token passed from the workflow
+  request: { fetch },
 });
+
+console.log("Authentication Token:", process.env.ORG_ACCESS_TOKEN ? "Present" : "Missing");
 
 const { data: repos } = await octokit.repos.listForOrg({
   org: "ABenoitOrg",
   type: "all",
 });
 
-
-const getDateDifferenceInDays = (date1, date2) => {
-  const normalizedDate1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
-  const normalizedDate2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
-
-  // Calculate the difference in days
-  const differenceInDays = (normalizedDate2 - normalizedDate1) / (1000 * 60 * 60 * 24);
-
-  return differenceInDays
-};
+for (const repo of repos) {
+  console.log(`Checking repository: ${repo.name}`);
+  await checkDeadlines("ABenoitOrg", repo.name);
+}
 
 async function checkDeadlines(owner, repo) {
   try {
@@ -30,50 +26,29 @@ async function checkDeadlines(owner, repo) {
       state: "open",
     });
 
-    console.log("Retrieved issues:", issues);
-
-    const today = new Date();
-
     for (const issue of issues) {
-      console.log(`Checking issue #${issue.number}: ${issue.title}`);
-
-      const assignees = issue.assignees.map((assignee) => `@${assignee.login}`).join(", ");
       const deadlineLabel = issue.labels.find(label => label.name.startsWith("deadline:"));
+      if (!deadlineLabel) continue;
 
-      if (deadlineLabel) {
-        const deadlineString = deadlineLabel.name.replace("deadline:", "").trim();
-        const deadlineDate = new Date(deadlineString.replace(/-/g, '\/'));
+      const deadlineDate = new Date(deadlineLabel.name.replace("deadline:", "").trim());
+      const today = new Date();
+      const daysLeft = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
 
-        const daysLeft = getDateDifferenceInDays(today, deadlineDate);
+      if (daysLeft <= 7 && daysLeft >= 0) {
+        const message = daysLeft === 0
+          ? "⏰ Today is the deadline for this issue!"
+          : `⏰ Reminder: This issue is due in ${daysLeft} day(s).`;
 
-        console.log(`Issue #${issue.number} has a deadline in ${daysLeft} days`);
-
-        if (daysLeft === 7 || daysLeft === 1 || daysLeft === 0) {
-          let message;
-          if (daysLeft === 0) {
-            message = "⏰ Today is the deadline for this issue!";
-          } else {
-            message = `⏰ Reminder: This issue is due in ${daysLeft} day(s).`;
-          }
-
-          await octokit.issues.createComment({
-            owner,
-            repo,
-            issue_number: issue.number,
-            body: `${assignees} ${message}`
-          });
-          console.log(`Comment posted on issue #${issue.number}`);
-        }
-      } else {
-        console.log(`No deadline label found on issue #${issue.number}`);
+        console.log(`Posting comment to issue #${issue.number} in ${repo}`);
+        await octokit.issues.createComment({
+          owner,
+          repo,
+          issue_number: issue.number,
+          body: message,
+        });
       }
     }
   } catch (error) {
-    console.error("Error checking deadlines:", error);
+    console.error("Error checking deadlines:", error.response?.data || error);
   }
 }
-
-for (const repo of repos) {
-  await checkDeadlines("ABenoitOrg", repo.name);
-}
-
