@@ -2,11 +2,11 @@ import { Octokit } from "@octokit/rest";
 import fetch from "node-fetch";
 
 const octokit = new Octokit({
-  auth: process.env.ORG_ACCESS_TOKEN, // Use the token passed from the workflow
+  auth: process.env.PERSONAL_ACCESS_TOKEN, // Use the token passed from the workflow
   request: { fetch },
 });
 
-console.log("Authentication Token:", process.env.ORG_ACCESS_TOKEN ? "Present" : "Missing");
+console.log("Authentication Token:", process.env.PERSONAL_ACCESS_TOKEN ? "Present" : "Missing");
 
 const { data: repos } = await octokit.repos.listForOrg({
   org: "ABenoitOrg",
