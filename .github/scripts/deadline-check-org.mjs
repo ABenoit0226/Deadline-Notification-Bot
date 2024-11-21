@@ -1,16 +1,14 @@
 import { Octokit } from "@octokit/rest";
 import fetch from "node-fetch"; // Import fetch from node-fetch
 
-const { data: repos } = await octokit.repos.listForOrg({
-  org: "ABenoitOrg",
-  type: "all",
-});
-
-
-
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
   request: { fetch }, // Pass fetch to Octokit
+});
+
+const { data: repos } = await octokit.repos.listForOrg({
+  org: "ABenoitOrg",
+  type: "all",
 });
 
 
