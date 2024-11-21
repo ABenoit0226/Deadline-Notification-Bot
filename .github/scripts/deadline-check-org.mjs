@@ -2,7 +2,7 @@ import { Octokit } from "@octokit/rest";
 import fetch from "node-fetch"; // Import fetch from node-fetch
 
 const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN,
+  auth: process.env.ORG_ACCESS_TOKEN,
   request: { fetch }, // Pass fetch to Octokit
 });
 
