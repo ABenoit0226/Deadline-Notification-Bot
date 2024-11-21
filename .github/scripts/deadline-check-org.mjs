@@ -74,6 +74,6 @@ async function checkDeadlines(owner, repo) {
 }
 
 for (const repo of repos) {
-  await checkDeadlinesForRepo("ABenoitOrg", repo.name);
+  await checkDeadlines("ABenoitOrg", repo.name);
 }
 
