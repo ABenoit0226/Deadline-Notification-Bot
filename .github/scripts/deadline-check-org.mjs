@@ -11,11 +11,6 @@ const { data: repos } = await octokit.repos.listForOrg({
   type: "all",
 });
 
-for (const repo of repos) {
-  console.log(`Checking repository: ${repo.name}`);
-  await checkDeadlines("ABenoitOrg", repo.name);
-}
-
 const getDateDifferenceInDays = (date1, date2) => {
   const normalizedDate1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
   const normalizedDate2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
@@ -25,6 +20,13 @@ const getDateDifferenceInDays = (date1, date2) => {
 
   return differenceInDays;
 };
+
+for (const repo of repos) {
+  console.log(`Checking repository: ${repo.name}`);
+  await checkDeadlines("ABenoitOrg", repo.name);
+}
+
+
 
 async function checkDeadlines(owner, repo) {
   try {
