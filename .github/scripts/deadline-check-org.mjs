@@ -6,7 +6,7 @@ const octokit = new Octokit({
   request: { fetch },
 });
 
-const org = "ABenoitOrg" //ORGANIZATION NAME HERE
+const org = "" //ORGANIZATION NAME HERE
 
 const { data: repos } = await octokit.repos.listForOrg({
   org: org,
