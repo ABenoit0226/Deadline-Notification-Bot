@@ -27,7 +27,7 @@ reviewer:GITHUB_USERNAME
 
 Follow the steps below to run the Deadline Notification GitHub Bot:
 
-### Copy the .github file to your repo
+### Copy the .github and package.json file to your repo
 
 This can be a separate repository from the issue repository or in the same repo.
 
