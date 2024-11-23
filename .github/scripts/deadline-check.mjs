@@ -1,8 +1,8 @@
 import { Octokit } from "@octokit/rest";
 import fetch from "node-fetch"; // Import fetch from node-fetch
 
-const owner = "ABenoit0226" //OWNER NAME HERE
-const repo = "Deadline-Notification-Bot" //REPO NAME HERE
+const owner = "" //OWNER NAME HERE
+const repo = "" //REPO NAME HERE
 
 const octokit = new Octokit({
   auth: process.env.PERSONAL_ACCESS_TOKEN,
