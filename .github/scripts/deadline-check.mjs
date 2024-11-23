@@ -20,7 +20,7 @@ const getDateDifferenceInDays = (date1, date2) => {
   return differenceInDays
 };
 
-async function checkDeadlines(owner, repo) {
+async function checkDeadlines() {
   try {
     const { data: issues } = await octokit.issues.listForRepo({
       owner,
@@ -85,7 +85,7 @@ async function checkDeadlines(owner, repo) {
       }
     }
   } catch (error) {
-    console.error("Error checking deadlines:", error.response?.data || error);
+    console.error("Error checking deadlines:", error);
   }
 }
 

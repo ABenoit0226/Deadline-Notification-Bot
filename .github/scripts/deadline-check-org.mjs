@@ -95,6 +95,6 @@ async function checkDeadlines(owner, repo) {
       }
     }
   } catch (error) {
-    console.error("Error checking deadlines:", error.response?.data || error);
+    console.error("Error checking deadlines:", error);
   }
 }
