@@ -1,60 +1,118 @@
 # Deadline Notification GitHub Bot
 
-This repository contains a GitHub Bot that helps notify users about upcoming deadlines for tasks, issues, or pull requests within a GitHub repository.
+A basic notification bot that takes advantage of the GitHub repository workflows to track issues and notify assigned members.
+
+By default, it notifies the assignee 1 week, 1 day, and day of the deadline by commenting on the issue and @'ing. 
+![Example Notification](examplenotif.png)
+
+The deadline is specified by adding a label to the issue in the format: 
+```
+deadline:YYYY-MM-DD
+```
+
+It also notifies a reviewer when the deadline has passed by adding a label in the format:
+```
+reviewer:GITHUB_USERNAME
+```
 
 ## Table of Contents
 
-1. [How to Run](#how-to-run)
-2. [Modifying the Code](#modifying-the-code)
+1. [Getting Started](#getting-started)
 
-## How to Run
+    1.1. [For Individual Repository](#for-individual-repository)
+
+    1.2. [For All Repos in an Organization](#for-all-repos-in-an-organization)
+
+## Getting Started
 
 Follow the steps below to run the Deadline Notification GitHub Bot:
 
-### 1. Clone the Repository
-Clone the repository to your local machine:
-```bash
-git clone https://github.com/your-username/deadline-notification-bot.git
+### Copy the .github file to your repo
+
+This can be a separate repository from the issue repository or in the same repo.
+
+### For Individual Repository
+
+#### Add your repository name and repository owner name to deadline-check.mjs
+
+Modify the fields at the top of deadline-check.mjs in your repository
 ```
-2. Install Dependencies
-Navigate to the project directory and install the necessary dependencies:
+const owner = ""
+const repo = ""
 ```
-cd deadline-notification-bot
-npm install
+
+#### Ensure the bottom of deadline-notifier.yml is as follows:
 ```
-3. Configure the Bot
-You’ll need to set up a GitHub App or Personal Access Token for authentication:
-
-Create a GitHub App or generate a personal access token on GitHub.
-Set the token in the configuration file config.json.
-Example config.json:
-
+        run: |
+          node .github/scripts/deadline-check.mjs
 ```
-{
-  "token": "your-github-token-here",
-  "repo": "your-repository-name"
-}
+It should be using the deadline-check.mjs script.
+
+#### Create a Fine-Grained Personal Access Token [Here](https://github.com/settings/tokens)
+
+In repository permissions, give this token read and write access to issues. It will also default to giving read access to metadata.
+
+Note: The token creator must be an owner or have admin privileges on the repository with issues.
+
+#### Add the token value to the repository with the .github code
+
+Go to the repository settings > Secrets and variables > Actions > New repository secret.
+
+Give the token the name PERSONAL_ACCESS_TOKEN so that it matches the .yml file and paste in the copied value from the token creation process.
+
+### For all Repos in an Organization
+
+#### Add organization name to deadline-checkorg.mjs
+
+Modify the org field at the top of deadline-check.mjs in your repository
 ```
-4. Start the Bot
-Run the bot with the following command:
+const org = ""
+```
+
+#### Ensure the bottom of deadline-notifier.yml is as follows:
+```
+        run: |
+          node .github/scripts/deadline-check-org.mjs
+```
+It should be using the deadline-check-org.mjs script.
 
 
-## Modifying the Code
-To modify the functionality of the Deadline Notification GitHub Bot, follow these guidelines:
+#### Create a classic Personal Access Token [Here](https://github.com/settings/tokens)
 
-1. Modify Notification Logic
-The logic for calculating deadlines and sending notifications is located in bot.js. You can customize the notification criteria by adjusting the code there. For example, you can modify the notification period or adjust how the bot handles different types of tasks (issues, pull requests, etc.).
+Give it ```repo``` and ```admin:org``` permissions.
 
-2. Update Notification Message
-The notification message sent to users is configurable in the notifyUser function in bot.js. You can change the content, formatting, or even the medium (such as sending messages to a Slack channel instead of a GitHub issue comment).
+Note: The token creator must be an owner or have admin privileges in the organization.
 
-3. Change Bot Settings
-For settings such as GitHub token or repository name, edit the config.json file. You can also add additional settings for custom behavior (e.g., time zones, reminder frequency, etc.).
+#### Add the token value to the repository with the .github code
 
-4. Add More Features
-You can extend the bot with more features such as:
+Go to the repository settings > Secrets and variables > Actions > New repository secret.
 
-Multiple repositories support
-Custom deadlines for different types of issues or pull requests
-Notifications for specific users or teams To do this, add new functions or modify existing ones in bot.js based on your needs.
+Give the token the name PERSONAL_ACCESS_TOKEN so that it matches the .yml file and paste in the copied value from the token creation process.
+
+### 3. Set Deadline
+
+As a default, the workflow is set to check for deadlines daily at 8AM UTC. 
+
+This can be modified at the top of deadline-notifier.yml
+```
+schedule:
+    - cron: '0 8 * * *'
+```
+
+Use [this](https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules) guide for scheduling format.
+
+### 4. Test Bot
+
+The bot is also set up to be run manually for testing purposes.
+
+Make sure all above set steps have been pushed to GitHub
+
+Start by creating an issue, adding an assignee, and a label with today's date as the deadline
+```
+deadline:YYYY-MM-DD
+```
+
+Go to the bot repository, select Actions, then the Deadline Notifier tab. Finally, select Run workflow and wait for the action to complete.
+
+You should now find a comment on the test issue with an @ for the assignee.
 
