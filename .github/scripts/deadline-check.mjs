@@ -20,15 +20,13 @@ const getDateDifferenceInDays = (date1, date2) => {
   return differenceInDays
 };
 
-async function checkDeadlines() {
+async function checkDeadlines(owner, repo) {
   try {
     const { data: issues } = await octokit.issues.listForRepo({
       owner,
       repo,
       state: "open",
     });
-
-    console.log("Retrieved issues:", issues);
 
     const today = new Date();
 
@@ -37,15 +35,17 @@ async function checkDeadlines() {
 
       const assignees = issue.assignees.map((assignee) => `@${assignee.login}`).join(", ");
       const deadlineLabel = issue.labels.find(label => label.name.startsWith("deadline:"));
+      const reviewerLabel = issue.labels.find(label => label.name.startsWith("reviewer:"));
 
       if (deadlineLabel) {
         const deadlineString = deadlineLabel.name.replace("deadline:", "").trim();
-        const deadlineDate = new Date(deadlineString.replace(/-/g, '\/'));
+        const deadlineDate = new Date(deadlineString.replace(/-/g, "/"));
 
         const daysLeft = getDateDifferenceInDays(today, deadlineDate);
 
         console.log(`Issue #${issue.number} has a deadline in ${daysLeft} days`);
 
+        // Notify if the deadline is approaching or today
         if (daysLeft === 7 || daysLeft === 1 || daysLeft === 0) {
           let message;
           if (daysLeft === 0) {
@@ -58,16 +58,34 @@ async function checkDeadlines() {
             owner,
             repo,
             issue_number: issue.number,
-            body: `${assignees} ${message}`
+            body: `${assignees} ${message}`,
           });
           console.log(`Comment posted on issue #${issue.number}`);
+        }
+
+        // Notify if the deadline has passed
+        if (daysLeft < 0) {
+          if (reviewerLabel) {
+            const reviewer = reviewerLabel.name.replace("reviewer:", "").trim();
+            const message = `@${reviewer} The deadline for this issue has passed.`;
+
+            await octokit.issues.createComment({
+              owner,
+              repo,
+              issue_number: issue.number,
+              body: message,
+            });
+            console.log(`Late notification sent to reviewer ${reviewer} for issue #${issue.number}`);
+          } else {
+            console.log(`No reviewer label found for overdue issue #${issue.number}`);
+          }
         }
       } else {
         console.log(`No deadline label found on issue #${issue.number}`);
       }
     }
   } catch (error) {
-    console.error("Error checking deadlines:", error);
+    console.error("Error checking deadlines:", error.response?.data || error);
   }
 }
 
