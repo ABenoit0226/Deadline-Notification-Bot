@@ -5,7 +5,7 @@ const owner = "ABenoit0226" //OWNER NAME HERE
 const repo = "bot-tester" //REPO NAME HERE
 
 const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN,
+  auth: process.env.PERSONAL_ACCESS_TOKEN,
   request: { fetch }, // Pass fetch to Octokit
 });
 

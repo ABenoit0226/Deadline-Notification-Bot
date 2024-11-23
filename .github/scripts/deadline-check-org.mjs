@@ -6,8 +6,10 @@ const octokit = new Octokit({
   request: { fetch },
 });
 
+const org = "ABenoitOrg" //ORGANIZATION NAME HERE
+
 const { data: repos } = await octokit.repos.listForOrg({
-  org: "ABenoitOrg",
+  org: org,
   type: "all",
 });
 
@@ -23,7 +25,7 @@ const getDateDifferenceInDays = (date1, date2) => {
 
 for (const repo of repos) {
   console.log(`Checking repository: ${repo.name}`);
-  await checkDeadlines("ABenoitOrg", repo.name);
+  await checkDeadlines(org, repo.name);
 }
 
 
