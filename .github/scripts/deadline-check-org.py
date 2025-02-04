@@ -15,35 +15,19 @@ REPO = "org-bot-test"  # Replace with repository name
 def get_repos(org):
     url = f"https://api.github.com/orgs/{org}/repos"
     response = requests.get(url, headers=HEADERS)
-    return response.json()
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print("Error fetching repositories:", response.json())
+        return []
 
 
 def get_issues(owner, repo):
     url = f"https://api.github.com/repos/{owner}/{repo}/issues?state=open"
     response = requests.get(url, headers=HEADERS)
-    return response.json()
-
-
-def post_comment(owner, repo, issue_number, message):
-    url = f"https://api.github.com/repos/{owner}/{repo}/issues/{issue_number}/comments"
-    data = {"body": message}
-    response = requests.post(url, json=data, headers=HEADERS)
-    return response.json()
-
-
-def get_date_difference_in_days(date1, date2):
-    return (date2 - date1).days
-
-
-def get_repos(org):
-    url = f"https://api.github.com/orgs/{org}/repos"
-    response = requests.get(url, headers=HEADERS)
-    return response.json() if response.status_code == 200 else []
-
-
-def get_issues(owner, repo):
-    url = f"https://api.github.com/repos/{owner}/{repo}/issues?state=open"
-    response = requests.get(url, headers=HEADERS)
+    if response.status_code == 404:
+        print(f"Repository {owner}/{repo} not found. Check if the repository name is correct.")
+        return []
     try:
         issues = response.json()
         if isinstance(issues, list):
