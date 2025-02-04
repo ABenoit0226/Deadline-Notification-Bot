@@ -1,4 +1,4 @@
-name: Deadline Notifier Python
+name: Deadline_Notifier_Python
 on:
   schedule:
     - cron: "0 9 * * *"  # Runs every day at 9 AM UTC
