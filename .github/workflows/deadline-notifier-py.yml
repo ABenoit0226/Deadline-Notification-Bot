@@ -1,0 +1,26 @@
+name: Deadline Notifier
+on:
+  schedule:
+    - cron: "0 9 * * *"  # Runs every day at 9 AM UTC
+  workflow_dispatch:  # Allows manual execution
+  push:
+
+jobs:
+  check-deadlines:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4  # Fetches the repo code
+
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"  # Use Python 3.10
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Run Deadline Checker Script
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.ORG_ACCESS_TOKEN }}
+        run: python .github/scripts/deadline-check-org.py
