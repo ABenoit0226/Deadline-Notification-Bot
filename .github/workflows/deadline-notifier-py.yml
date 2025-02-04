@@ -20,5 +20,5 @@ jobs:
 
       - name: Run Deadline Checker Script
         env:
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.ORG_ACCESS_TOKEN }}
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: python .github/scripts/deadline-check-org.py
