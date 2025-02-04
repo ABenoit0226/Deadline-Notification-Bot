@@ -8,8 +8,8 @@ HEADERS = {"Authorization": f"token {GITHUB_TOKEN}"}
 
 # Organization and repository details
 ORG = ""  # Replace with organization name
-OWNER = "ABenoit0226"  # Replace with owner name
-REPO = "Deadline-Notification-Bot"  # Replace with repository name
+OWNER = ""  # Replace with owner name
+REPO = ""  # Replace with repository name
 
 
 def get_repos(org):
