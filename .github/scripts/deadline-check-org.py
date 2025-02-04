@@ -52,7 +52,12 @@ def check_deadlines(owner, repo):
         
         if deadline_label:
             deadline_string = deadline_label.replace("deadline:", "").strip()
-            deadline_date = datetime.strptime(deadline_string, "%Y/%m/%d")
+            try:
+                deadline_date = datetime.strptime(deadline_string, "%Y-%m-%d")
+            except ValueError:
+                print(f"Invalid date format for issue #{issue_number}: {deadline_string}")
+                continue
+            
             days_left = get_date_difference_in_days(today, deadline_date)
             
             print(f"Issue #{issue_number} has a deadline in {days_left} days")
