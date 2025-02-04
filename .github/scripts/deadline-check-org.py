@@ -7,9 +7,9 @@ GITHUB_TOKEN = os.getenv("PERSONAL_ACCESS_TOKEN")
 HEADERS = {"Authorization": f"token {GITHUB_TOKEN}"}
 
 # Organization and repository details
-ORG = "ABenoitOrg"  # Replace with organization name
-OWNER = ""  # Replace with owner name
-REPO = ""  # Replace with repository name
+ORG = ""  # Replace with organization name
+OWNER = "ABenoit0226"  # Replace with owner name
+REPO = "org-bot-test"  # Replace with repository name
 
 
 def get_repos(org):
