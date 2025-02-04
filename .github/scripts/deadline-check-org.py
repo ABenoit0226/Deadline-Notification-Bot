@@ -35,13 +35,49 @@ def get_date_difference_in_days(date1, date2):
     return (date2 - date1).days
 
 
+def get_repos(org):
+    url = f"https://api.github.com/orgs/{org}/repos"
+    response = requests.get(url, headers=HEADERS)
+    return response.json() if response.status_code == 200 else []
+
+
+def get_issues(owner, repo):
+    url = f"https://api.github.com/repos/{owner}/{repo}/issues?state=open"
+    response = requests.get(url, headers=HEADERS)
+    try:
+        issues = response.json()
+        if isinstance(issues, list):
+            return issues
+        else:
+            print("Unexpected response format for issues:", issues)
+            return []
+    except ValueError:
+        print("Failed to parse JSON response for issues.")
+        return []
+
+
+def post_comment(owner, repo, issue_number, message):
+    url = f"https://api.github.com/repos/{owner}/{repo}/issues/{issue_number}/comments"
+    data = {"body": message}
+    response = requests.post(url, json=data, headers=HEADERS)
+    return response.json()
+
+
+def get_date_difference_in_days(date1, date2):
+    return (date2 - date1).days
+
+
 def check_deadlines(owner, repo):
     today = datetime.today()
     issues = get_issues(owner, repo)
     
     for issue in issues:
-        issue_number = issue["number"]
-        title = issue["title"]
+        if not isinstance(issue, dict):
+            print("Skipping unexpected issue format:", issue)
+            continue
+        
+        issue_number = issue.get("number")
+        title = issue.get("title", "Unknown Title")
         print(f"Checking issue #{issue_number}: {title}")
         
         assignees = ", ".join([f"@{assignee['login']}" for assignee in issue.get("assignees", [])])
@@ -78,7 +114,10 @@ def check_deadlines(owner, repo):
 if ORG:
     repos = get_repos(ORG)
     for repo in repos:
-        print(f"Checking repository: {repo['name']}")
-        check_deadlines(ORG, repo['name'])
+        if isinstance(repo, dict) and "name" in repo:
+            print(f"Checking repository: {repo['name']}")
+            check_deadlines(ORG, repo['name'])
+        else:
+            print("Skipping invalid repository format:", repo)
 elif OWNER and REPO:
     check_deadlines(OWNER, REPO)
