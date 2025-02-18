@@ -15,6 +15,7 @@ REPO = ""  # Replace with repository name
 def get_repos(org):
     url = f"https://api.github.com/orgs/{org}/repos"
     response = requests.get(url, headers=HEADERS)
+    print(response.json())
     if response.status_code == 200:
         return response.json()
     else:
